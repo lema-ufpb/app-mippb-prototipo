@@ -1,0 +1,5 @@
+{
+  "buildCommand": "mkdir -p dist && cp index.html dist/ && cp -r dados config static dist/",
+  "outputDirectory": "dist",
+  "cleanUrls": true
+}

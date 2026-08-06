@@ -45,6 +45,20 @@ Acesse `http://127.0.0.1:8780/`. Para parar e remover:
 docker stop painel-mip-pb && docker rm painel-mip-pb
 ```
 
+### Vercel
+
+O projeto e estatico e ja esta configurado com `vercel.json` (o build copia `index.html`, `dados/`, `config/` e `static/` para `dist/`, que e o diretorio publicado).
+
+Pelo CLI:
+
+```bash
+npm i -g vercel
+vercel
+# ou vercel --prod para publicar direto em producao
+```
+
+Ou conecte o repositorio no painel da Vercel — o `vercel.json` define build e output automaticamente. A raiz `/` serve o painel.
+
 ## Organizacao dos arquivos
 
 | Pasta/arquivo | Funcao |
