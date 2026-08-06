@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modelo de avaliação ex ante de benefícios tributários - SEFAZ-PB V20_B [EXPERIMENTAL]</title>
+<link rel="stylesheet" href="static/v20/styles.css">
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="header-title">
+      <h1>Avaliação ex ante de benefícios tributários — SEFAZ-PB</h1>
+      <p>Versão enxuta: impactos econômicos, leitura documental e mapa territorial simplificado</p>
+    </div>
+    <span class="exp-badge">DADOS EXPERIMENTAIS</span>
+  </div>
+</header>
+<main>
+  <div class="tab-shell">
+    <nav class="tab-bar" aria-label="Navegação principal da análise">
+      <button type="button" class="tab-btn tab-back active" data-tab="entrada" onclick="switchMainTab('entrada')"><b>Voltar</b></button>
+      <div class="result-tab-strip" role="tablist" aria-label="Resultados da análise">
+        <button type="button" class="tab-btn result-tab" data-tab="economico" onclick="switchMainTab('economico')" role="tab"><b>Impactos econômicos</b></button>
+      </div>
+      <details class="top-nav-menu" id="top_nav_menu">
+        <summary aria-label="Abrir menu superior"><span></span><span></span><span></span></summary>
+        <div class="top-nav-menu-panel" role="menu">
+          <button type="button" class="tab-btn tab-menu-item" data-tab="tecnica" data-module-id="memoria_tecnica" onclick="switchMainTab('tecnica')" role="menuitem"><b>Memória técnica</b></button>
+          <button type="button" class="tab-btn tab-menu-item" data-tab="documento" data-module-id="documento_analise" onclick="switchMainTab('documento')" role="menuitem"><b>Documento da análise</b></button>
+          <button type="button" class="tab-btn tab-menu-item" data-tab="parametros" data-module-id="parametros" onclick="switchMainTab('parametros')" role="menuitem"><b>Parâmetros</b></button>
+        </div>
+      </details>
+    </nav>
+<section id="formulario" class="tab-panel active" data-tab="entrada">
+  <div class="form-heading">
+    <div>
+      <span class="form-kicker">Entrada de dados</span>
+      <h2>Avaliação ex ante</h2>
+      <p>Preencha somente os dados da etapa atual.</p>
+    </div>
+    <details class="form-more-actions" id="form_more_actions">
+      <summary>Mais ações</summary>
+      <div class="more-actions-menu" role="group" aria-label="Ações secundárias do formulário">
+        <button type="button" class="light" onclick="fecharMaisAcoes();renderPaginaInicial();switchMainTab('economico')">Processos salvos</button>
+        <button type="button" class="light" onclick="fecharMaisAcoes();renderComparacaoAvaliacoes();switchMainTab('economico')">Comparar avaliações</button>
+        <button type="button" class="light" onclick="fecharMaisAcoes();selecionarEntradaDocumental()">Ler documento do processo</button>
+        <button type="button" class="light" onclick="fecharMaisAcoes();switchMainTab('parametros')">Parâmetros técnicos</button>
+        <button type="button" class="light" onclick="fecharMaisAcoes();novaAnalise()">Nova análise</button>
+        <details class="more-actions-help">
+          <summary>Como funciona</summary>
+          <ol>
+            <li>Informe a empresa e o processo.</li>
+            <li>Preencha o setor e os cenários com e sem benefício.</li>
+            <li>Revise a qualificação e gere o relatório.</li>
+          </ol>
+        </details>
+      </div>
+    </details>
+  </div>
+  <div class="wizard-progress" id="wizard_nav" aria-live="polite">
+    <div class="wizard-progress-label">
+      <span id="wizard_eyebrow">Etapa 1 de 3</span>
+      <strong id="wizard_title">Empresa</strong>
+    </div>
+    <div class="wizard-progress-track" id="wizard_progress_track" role="progressbar" aria-label="Progresso do formulário" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1">
+      <span id="wizard_progress_bar"></span>
+    </div>
+  </div>
+  <div id="wizard_validation_summary" class="validation-summary" role="alert" aria-live="assertive" hidden></div>
+
+  <section class="entry-mode-panel wizard-panel active" data-step="1" aria-label="Modo de entrada de dados">
+    <div class="entry-mode-grid">
+      <button type="button" id="entry_manual_card" class="entry-mode-card active" onclick="selecionarEntradaManual()">
+        <b>Informar manualmente</b>
+        <span>Preencher e revisar os campos diretamente no formulário.</span>
+      </button>
+      <button type="button" id="entry_documental_card" class="entry-mode-card" onclick="selecionarEntradaDocumental()">
+        <b>Ler documento</b>
+        <span>Carregar arquivo do processo e aceitar os campos identificados pela IA.</span>
+      </button>
+    </div>
+    <div id="entry_mode_status" class="entry-mode-status"><b>Modo manual selecionado.</b></div>
+    <details id="coleta_documental" class="form-details contextual-panel" hidden>
+      <summary>Leitura documental assistida</summary>
+      <div class="card-body">
+        <label>Arquivo do processo</label>
+        <input id="contrato_file" type="file" accept=".pdf,.docx,.doc,.txt">
+        <div class="ai-actions">
+          <button type="button" class="light" onclick="extrairContratoIA()">Ler documento</button>
+          <button type="button" class="light" onclick="aplicarCamposIA()">Confirmar e aplicar campos marcados</button>
+        </div>
+        <div id="ia_status" class="ai-status">Inicie o serviço local e carregue um arquivo para usar esta função.</div>
+        <div id="ia_result" class="ai-box">Nenhum documento lido.</div>
+        <button type="button" class="light contextual-close" onclick="fecharColetaDocumental()">Fechar leitura documental</button>
+      </div>
+    </details>
+  </section>
+
+  <!-- IDENTIFICAÇÃO -->
+  <fieldset class="field-group wizard-panel active" data-step="1">
+    <legend>Identificação da empresa</legend>
+    <div class="field-row-2">
+      <div>
+        <label>CNPJ</label>
+        <input id="cnpj" placeholder="00.000.000/0000-00" maxlength="18" aria-describedby="cnpj_status"
+          oninput="formatarCNPJ(this);agendarConsultaCNPJ(this)" onblur="consultarCNPJ()" />
+        <p id="cnpj_status" class="hint"></p>
+      </div>
+      <div>
+        <label>Número de protocolo</label>
+        <input id="protocolo" placeholder="Ex.: 2026-0048" />
+      </div>
+    </div>
+    <label>Razão social</label>
+    <input id="razao_social" placeholder="Informe a razão social" />
+    <div class="field-row-2">
+      <div><label>Nome fantasia</label><input id="nome_fantasia" placeholder="Opcional" /></div>
+      <div>
+        <label>Porte</label>
+        <select id="porte_empresa">
+          <option value="">Selecione...</option>
+          <option value="mei">MEI</option><option value="micro">Microempresa</option>
+          <option value="pequena">Pequena empresa</option><option value="media">Média empresa</option>
+          <option value="grande">Grande empresa</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row-2">
+      <div>
+        <label>UF de origem</label>
+        <select id="uf_origem">
+          <option value="PB">PB — empresa local</option>
+          <option value="outro_NE">Outro estado do Nordeste</option>
+          <option value="outro_BR">Outro estado fora do Nordeste</option>
+          <option value="exterior">Exterior</option>
+        </select>
+      </div>
+      <div>
+        <label>Situação</label>
+        <select id="situacao_cadastral">
+          <option value="nova">Implantação nova</option>
+          <option value="expansao">Expansão de unidade existente</option>
+          <option value="reativacao">Reativação</option>
+          <option value="reloc">Relocalização de outra UF</option>
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <div id="cnpj_company_profile" class="cnpj-company-profile wizard-panel active" data-step="1" aria-live="polite" hidden></div>
+
+  <fieldset class="field-group analysis-mode wizard-panel active" data-step="1">
+    <legend>Tipo de análise</legend>
+    <label>Qual situação será avaliada?</label>
+    <select id="tipo_analise" onchange="onTipoAnaliseChange()">
+      <option value="nova">Nova empresa ou expansão</option>
+      <option value="retencao">Empresa já existente / retenção</option>
+    </select>
+    <p id="tipo_analise_hint" class="analysis-mode-hint">
+      Avalia o acréscimo de produção esperado com o benefício em relação ao cenário sem benefício.
+    </p>
+  </fieldset>
+
+  <!-- MACROSSEGMENTO -->
+  <fieldset class="field-group wizard-panel" data-step="2">
+    <legend>Macrossegmento</legend>
+    <label>Selecione o macrossegmento da empresa</label>
+    <select id="macrossegmento" onchange="onMacrossegmentoChange()">
+      <option value="">Selecione...</option>
+      <option value="industria">Indústria</option>
+      <option value="comercio">Comércio</option>
+    </select>
+    <div id="macro_badge_industria" class="macro-badge industria">
+      🏭 Indústria — multiplicadores MIP aplicados integralmente ao valor da produção
+    </div>
+    <div id="macro_badge_comercio" class="macro-badge comercio">
+      🛒 Comércio — choque calculado sobre margem; critérios de origem e destino com peso diferenciado
+    </div>
+
+    <!-- PAINEL INDÚSTRIA -->
+    <div id="panel_industria" class="macro-panel">
+      <label>CNAE principal</label>
+      <input id="cnae" placeholder="Ex.: 1112" oninput="updateSectorUI()">
+      <label>Código TRU/SCN</label>
+      <input id="tru" placeholder="Ex.: 1100" oninput="updateSectorUI()">
+      <p id="atividade_info" class="hint"></p>
+      <label>NCM dos principais produtos</label>
+      <div id="ncm_list" style="display:flex;flex-direction:column;gap:6px;margin-top:4px"></div>
+      <button type="button" class="light" onclick="adicionarNCM()"
+        style="margin-top:6px;padding:6px 12px;font-size:12px">+ Adicionar NCM</button>
+      <p id="ncm_hint" class="hint"></p>
+      <label>Município de instalação</label><select id="municipio"></select>
+      <div class="mode-only-nova">
+        <label>Produção/faturamento esperado sem benefício (R$)</label>
+        <input id="valor_sem_beneficio" class="money-input" inputmode="numeric" data-allow-blank="true" placeholder="0 se o projeto não ocorreria">
+        <p class="hint">Se for zero, refere-se a uma nova unidade produtiva.</p>
+        <label>Produção esperada com benefício (R$)</label>
+        <input id="valor" class="money-input" inputmode="numeric" value="0">
+        <div class="shock-readout"><b>Choque de produção considerado</b><strong id="choque_valor">R$ 0</strong></div>
+        <label>Percentual de renúncia pleiteado do ICMS (%)</label>
+        <input id="renuncia_pct" type="number" min="0" max="100" step="0.01" value="74.25">
+        <label>Meta de recuperação de tributos (%)</label>
+        <input id="meta_recuperacao_tributos" type="number" min="0" max="100" step="1" value="100">
+        <label>Empregos diretos informados</label>
+        <input id="empregos" type="number" placeholder="Ex.: 200">
+      </div>
+      <label>Salário médio mensal esperado (R$)</label>
+      <input id="salario" class="money-input" inputmode="numeric" value="0">
+    </div>
+
+    <!-- PAINEL COMÉRCIO -->
+    <div id="panel_comercio" class="macro-panel comercio">
+      <label>CNAE principal</label>
+      <input id="cnae_com" placeholder="Ex.: 4711" oninput="updateSectorUI()">
+      <label>Código TRU/SCN</label>
+      <input id="tru_com" placeholder="Ex.: 4500" oninput="updateSectorUI()">
+      <p id="atividade_info_com" class="hint"></p>
+      <label>Margem comercial média estimada (%)</label>
+      <input id="com_margem" type="number" min="1" max="100" step="0.5" value="20">
+      <label>Município de instalação</label><select id="municipio_com"></select>
+      <div class="mode-only-nova">
+        <label>Produção/faturamento esperado sem benefício (R$)</label>
+        <input id="valor_sem_beneficio_com" class="money-input" inputmode="numeric" data-allow-blank="true" placeholder="0 se o projeto não ocorreria">
+        <p class="hint">Se for zero, refere-se a uma nova unidade produtiva.</p>
+        <label>Faturamento esperado com benefício (R$)</label>
+        <input id="valor_com" class="money-input" inputmode="numeric" value="0">
+        <div class="shock-readout"><b>Acréscimo de faturamento informado</b><strong id="choque_valor_com">R$ 0</strong><span class="hint">O choque aplicado à MIP considera esse acréscimo multiplicado pela margem comercial.</span></div>
+        <p class="hint">Choque aplicado à MIP = acréscimo de faturamento × margem.</p>
+        <label>Percentual de renúncia pleiteado do ICMS (%)</label>
+        <input id="renuncia_pct_com" type="number" min="0" max="100" step="0.01" value="74.25">
+        <label>Meta de recuperação de tributos (%)</label>
+        <input id="meta_recuperacao_tributos_com" type="number" min="0" max="100" step="1" value="100">
+        <label>Empregos diretos informados</label>
+        <input id="empregos_com" type="number" placeholder="Ex.: 50">
+      </div>
+      <label>Salário médio mensal esperado (R$)</label>
+      <input id="salario_com" class="money-input" inputmode="numeric" value="0">
+
+      <div style="margin-top:14px;padding:12px;border:1px solid var(--comercio-border);border-radius:8px;background:var(--comercio-light)">
+        <b style="color:#4c1d95;font-size:13px">🛒 Critérios específicos do comércio</b>
+        <p class="hint" style="margin-top:4px">Entram nos pesos exclusivos do comércio — não se aplicam à indústria.</p>
+        <label>Origem principal dos produtos vendidos</label>
+        <select id="com_origem_produtos">
+          <option value="">Selecione...</option>
+          <option value="local_pb">Produzidos na Paraíba (&gt;50%)</option>
+          <option value="nordeste">Produzidos no Nordeste (&gt;50%)</option>
+          <option value="sul_sudeste">Sul/Sudeste (&gt;50%)</option>
+          <option value="importado">Importados do exterior (&gt;50%)</option>
+          <option value="misto">Origem mista</option>
+        </select>
+        <p class="hint">Produtos de origem local fortalecem encadeamentos produtivos da Paraíba.</p>
+        <label>Principal destino das vendas</label>
+        <select id="com_destino_vendas">
+          <option value="">Selecione...</option>
+          <option value="pb">Mercado da Paraíba (consumidores e empresas locais)</option>
+          <option value="ne">Outras UFs do Nordeste</option>
+          <option value="brasil">Outras UFs do Brasil</option>
+          <option value="exterior">Exterior (exportação)</option>
+          <option value="misto">Destino misto</option>
+        </select>
+        <p class="hint">Vendas no mercado estadual mantêm a renda circulando na economia da Paraíba.</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <div id="panel_retencao" class="retention-panel wizard-panel" data-step="2">
+    <h3 style="margin:0 0 8px;color:#115e59">Empresa já existente / retenção</h3>
+    <div class="retention-note">
+      Use esta seção quando a empresa já opera na Paraíba e afirma que reduziria, encerraria ou transferiria a atividade caso o pleito não seja atendido. O choque aplicado à MIP é a diferença entre o cenário com pleito atendido e o cenário sem acordo.
+    </div>
+    <div class="field-row-2">
+      <div>
+        <label>Produção/faturamento atual na Paraíba (R$)</label>
+        <input id="ret_producao_atual" class="money-input" inputmode="numeric" value="0">
+        <p class="hint">Referência da operação atual. Se o cenário com pleito atendido ficar em branco, este valor será usado como referência.</p>
+      </div>
+      <div>
+        <label>Empregos diretos atuais</label>
+        <input id="ret_empregos_atuais" type="number" min="0" placeholder="Ex.: 1000">
+      </div>
+    </div>
+    <div class="field-row-2">
+      <div>
+        <label>Benefício atual de ICMS (%)</label>
+        <input id="ret_beneficio_atual_pct" type="number" min="0" max="100" step="0.01" value="0">
+      </div>
+      <div>
+        <label>Benefício pleiteado de ICMS (%)</label>
+        <input id="ret_beneficio_pleiteado_pct" type="number" min="0" max="100" step="0.01" value="74.25">
+      </div>
+    </div>
+    <div class="field-row-2">
+      <div>
+        <label>Produção/faturamento esperado se o pleito for atendido (R$)</label>
+        <input id="ret_producao_pleito_atendido" class="money-input" inputmode="numeric" value="0">
+        <p class="hint">Se ficar em branco, o painel usa a produção/faturamento atual.</p>
+      </div>
+      <div>
+        <label>Produção/faturamento esperado sem acordo (R$)</label>
+        <input id="ret_producao_sem_acordo" class="money-input" inputmode="numeric" data-allow-blank="true" placeholder="0 se a hipótese for saída integral">
+        <p class="hint">Use 0 se a hipótese analisada for saída integral da empresa do estado.</p>
+      </div>
+    </div>
+    <div class="shock-readout"><b>Produção/faturamento preservado</b><strong id="choque_retencao_valor">R$ 0</strong><span class="hint">Para comércio, o choque aplicado à MIP considera esse valor multiplicado pela margem comercial.</span></div>
+    <div class="field-row-2">
+      <div>
+        <label>Empregos diretos com pleito atendido</label>
+        <input id="ret_empregos_pleito" type="number" min="0" placeholder="Ex.: 1000">
+      </div>
+      <div>
+        <label>Empregos diretos sem acordo</label>
+        <input id="ret_empregos_sem_acordo" type="number" min="0" placeholder="Ex.: 0">
+      </div>
+    </div>
+    <div class="field-row-2">
+      <div>
+        <label>Probabilidade de saída/redução sem acordo (%)</label>
+        <input id="ret_prob_saida_pct" type="number" min="0" max="100" step="1" value="100">
+      </div>
+      <div>
+        <label>Meta de recuperação de tributos (%)</label>
+        <input id="ret_meta_recuperacao_tributos" type="number" min="0" max="100" step="1" value="100">
+      </div>
+    </div>
+    <details class="form-details" style="margin-top:12px">
+      <summary>Cenário intermediário opcional</summary>
+      <div class="card-body">
+        <label>Produção/faturamento esperado se mantido apenas o benefício atual (R$)</label>
+        <input id="ret_producao_beneficio_atual" class="money-input" inputmode="numeric" value="0">
+        <p class="hint">Use somente se quiser separar o custo fiscal já existente do custo incremental do novo pleito. Se ficar em branco, o painel usa a produção/faturamento atual.</p>
+      </div>
+    </details>
+    <label>Evidência apresentada para risco de saída ou redução</label>
+    <textarea id="ret_evidencia_saida" rows="3" placeholder="Ex.: ata, estudo de viabilidade, comparação com outro estado, carta de intenção, histórico de operação, contrato com fornecedores etc."></textarea>
+    <label>Ideia para discutir com auditores: possível ganho via DIFAL</label>
+    <textarea id="ret_ideia_difal" rows="3" placeholder="Se a empresa sair e os produtos passarem a vir de outros estados, pode haver arrecadação via DIFAL? Registre a hipótese e pontos que precisam ser checados."></textarea>
+  </div>
+
+  <details class="form-details wizard-panel" data-step="3">
+    <summary>Campos complementares de qualificação</summary>
+    <div class="card-body">
+      <label>Parcela dos insumos produzida localmente (%)</label>
+      <input id="local" type="number" min="0" max="100" step="0.01" placeholder="Ex.: 50">
+      <label>Produtos produzidos/comercializados</label>
+      <textarea id="produtos" rows="3"></textarea>
+      <label>Destino da produção</label>
+      <select id="destino">
+        <option value="">Selecione...</option>
+        <option>Mercado local</option><option>Outras UFs</option>
+        <option>Exportação</option><option>Misto</option>
+      </select>
+      <label>Produto substitui importações?</label>
+      <select id="substitui">
+        <option value="nao_informado">Não informado</option>
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+      <label>Produto novo ou pouco produzido no estado?</label>
+      <select id="novo_produto">
+        <option value="nao_informado">Não informado</option>
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+      <label>Setor estratégico definido pela política estadual?</label>
+      <select id="estrategico">
+        <option value="nao_informado">Não informado</option>
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+    </div>
+  </details>
+
+  <details class="form-details wizard-panel" data-step="3">
+    <summary>Ganho adicional para o Estado, permanência e investimento</summary>
+    <div class="card-body">
+      <label>O projeto seria realizado na Paraíba sem o benefício?</label>
+      <select id="adicionalidade">
+        <option value="nao_informado">Não informado</option>
+        <option value="nao">Não seria realizado</option>
+        <option value="menor_escala">Seria realizado em menor escala</option>
+        <option value="outro_estado">Seria realizado em outro estado</option>
+        <option value="sim">Seria realizado de qualquer forma</option>
+      </select>
+      <label>Tempo previsto do projeto na Paraíba (anos)</label>
+      <input id="permanencia_anos" type="number" min="0" step="1" placeholder="Ex.: 10">
+      <label>Investimento privado total estimado (R$) — opcional</label>
+      <input id="investimento_privado" class="money-input" inputmode="numeric" value="0">
+      <p class="hint">Se este campo ficar zerado, o painel usa a soma dos campos detalhados abaixo: terreno/imóvel, obras e outros investimentos. Isso evita dupla contagem.</p>
+      <label>Valor para aquisição de terreno ou imóvel (R$)</label>
+      <input id="investimento_terreno_imovel" class="money-input" inputmode="numeric" value="0">
+      <label>Valor previsto para obras (R$)</label>
+      <input id="investimento_obras" class="money-input" inputmode="numeric" value="0">
+      <label>Outros investimentos previstos (P&D, treinamentos etc.) (R$)</label>
+      <input id="investimento_outros" class="money-input" inputmode="numeric" value="0">
+      <label>O imóvel de instalação é próprio ou alugado?</label>
+      <select id="imovel_tipo">
+        <option value="">Selecione...</option>
+        <option value="proprio">Próprio</option>
+        <option value="alugado">Alugado</option>
+        <option value="comodato">Cedido/comodato</option>
+        <option value="outro">Outro</option>
+      </select>
+      <label>Parcela dos equipamentos adquiridos para a empresa (%)</label>
+      <input id="equipamentos_adquiridos_pct" type="number" min="0" max="100" step="1" placeholder="Ex.: 80">
+      <label>Obteve algum incentivo locacional/crédito para essa atividade?</label>
+      <select id="incentivo_locacional">
+        <option value="">Não informado</option>
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+      <label>Investimento público inicial associado (R$)</label>
+      <input id="investimento_publico" class="money-input" inputmode="numeric" value="0">
+      <label>Percentual máximo de renúncia permitido (%)</label>
+      <input id="renuncia_maxima_permitida" type="number" min="0" max="100" step="0.01" value="74.25">
+      <p class="hint">A análise experimental calcula o acréscimo de produção necessário para atingir a meta de recuperação fiscal definida pelo gestor. Use 100% para neutralidade fiscal integral.</p>
+      <label>Parcela dos ativos fixos recuperáveis (%)</label>
+      <input id="ativos_recuperaveis_pct" type="number" min="0" max="100" step="1" placeholder="Ex.: 30">
+      <p class="hint">Quanto menor essa parcela, maior o enraizamento do projeto no estado.</p>
+    </div>
+  </details>
+
+  <details class="form-details wizard-panel" data-step="3">
+    <summary>Aderência ao FAIN</summary>
+    <div class="card-body">
+      <div class="field-row-2">
+        <div>
+          <label>Enquadramento pretendido no FAIN</label>
+          <select id="fain_enquadramento">
+            <option value="nao_informado">Não informado</option>
+            <option value="implantacao">Implantação</option>
+            <option value="ampliacao">Ampliação</option>
+            <option value="modernizacao">Modernização</option>
+            <option value="revitalizacao">Revitalização</option>
+            <option value="relocalizacao">Relocalização</option>
+            <option value="produto_sem_similar">Bem sem similar no Estado</option>
+            <option value="isonomia">Isonomia / protocolo de intenções</option>
+          </select>
+        </div>
+        <div>
+          <label>Incremento de capacidade nominal informado (%)</label>
+          <input id="fain_incremento_capacidade_pct" type="number" min="0" step="0.1" placeholder="Ex.: 35">
+        </div>
+      </div>
+      <div class="field-row-2">
+        <label>Projeto econômico-financeiro protocolado na CINEP?
+          <select id="fain_projeto_cinep">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+        <label>Atividade elegível ao FAIN?
+          <select id="fain_atividade_elegivel">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Industrial ou turística</option>
+            <option value="nao">Outra atividade</option>
+          </select>
+        </label>
+      </div>
+      <div class="field-row-2">
+        <label>Foro/domicílio fiscal na Paraíba?
+          <select id="fain_domicilio_pb">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+        <label>Inscrição ativa no Cadastro de Contribuintes do ICMS?
+          <select id="fain_inscricao_icms">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+      </div>
+      <div class="field-row-2">
+        <label>Adimplente com obrigações tributárias estaduais?
+          <select id="fain_adimplencia">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+        <label>Não optante pelo Simples Nacional?
+          <select id="fain_nao_simples">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+      </div>
+      <div class="field-row-2">
+        <label>Projeto informa empregos, investimentos e produção incentivada?
+          <select id="fain_contrapartidas">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+        <label>Não acumula outro benefício fiscal incompatível?
+          <select id="fain_sem_outro_beneficio">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+      </div>
+      <div class="field-row-2">
+        <label>NCM/produtos e produção anual informados no projeto?
+          <select id="fain_ncm_producao">
+            <option value="nao_informado">Não informado</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+        <label>Certidão SEFAZ de bem sem similar, quando aplicável?
+          <select id="fain_certidao_sem_similar">
+            <option value="nao_informado">Não informado / não aplicável</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </details>
+
+  <!-- OPÇÕES -->
+  <details id="secao-opcoes" class="card" style="margin-top:14px">
+    <summary>Gerenciamento de opções do relatório</summary>
+    <div class="card-body">
+      <label>Endereço do serviço local de IA</label>
+      <input id="ia_service_url" value="http://127.0.0.1:8771">
+      <label>Setores que concentram X% dos efeitos indiretos
+        <button type="button" class="help-btn" onclick="openTextHelp(event,'Setores que concentram os impactos indiretos','Esse parâmetro define quantos setores aparecem na tabela e no mapa dos impactos indiretos. O painel ordena os setores mais afetados pela produção da empresa e seleciona o conjunto que acumula o percentual escolhido. Com 50%, por exemplo, o relatório mostra os setores que juntos respondem por metade dos efeitos indiretos estimados.')" aria-label="Ajuda do indicador">?</button>
+      </label>
+      <input id="impact_share" type="number" min="10" max="100" step="5" value="50">
+      <h3>Parâmetros de horizonte e desconto</h3>
+      <div class="option-grid">
+        <label>Horizonte de análise (anos)</label>
+        <input id="retorno_horizonte" type="number" min="1" max="30" step="1" value="10">
+        <label>Crescimento anual esperado (%)</label>
+        <input id="retorno_crescimento" type="number" step="0.1" value="0">
+        <label>Taxa de desconto anual (%)</label>
+        <input id="retorno_desconto" type="number" step="0.1" value="6">
+        <label>Meses na massa salarial direta</label>
+        <input id="retorno_meses_salario" type="number" min="1" max="14" step="1" value="12">
+      </div>
+      <p class="hint">Resultados experimentais. Esses indicadores não entram na nota preliminar.</p>
+
+      <div class="weights-header">
+        <h3><span id="peso_lock_icon">🔒</span> Pesos da nota geral</h3>
+        <button type="button" class="light" id="peso_unlock_btn" onclick="abrirModalPesos()">Desbloquear pesos</button>
+      </div>
+      <div id="peso_status" class="admin-status">Pesos protegidos — alterações requerem autenticação</div>
+
+      <div class="balance-card">
+        <h3>⚖ Equilíbrio atual da avaliação</h3>
+        <div id="balance-bar"><div id="bar-short" style="background:#1e5fa8"></div><div id="bar-long" style="background:#1a7a4a"></div></div>
+        <div id="balance-labels"><span id="label-short">Curto prazo: -</span><span id="label-long">Longo prazo: -</span></div>
+        <div id="balance-warning" style="display:none;color:#b45309">⚠ Distribuição muito assimétrica: considere rebalancear os pesos.</div>
+        <p class="hint">Orienta sobre quais objetivos têm maior peso na pontuação preliminar.</p>
+      </div>
+
+      <div id="weights_grid" class="weights-locked">
+        <section class="weight-block short-term">
+          <div class="weight-block-head"><h3>Bloco A — Curto prazo</h3><span>Curto prazo</span></div>
+          <p class="hint">Efeitos econômicos imediatos: produção, emprego e retorno fiscal no ciclo corrente.</p>
+          <div class="weight-subgroup">
+            <h4>📊 Eficiência dos multiplicadores econômicos</h4>
+            <label>Produção acima da média<input id="w_producao" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_producao">0,50</output></label>
+            <label>VA acima da média<input id="w_va" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_va">0,50</output></label>
+            <label>Emprego acima da média<input id="w_emprego_mult" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_emprego_mult">0,50</output></label>
+            <label>Tributos acima da média<input id="w_tributos_mult" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_tributos_mult">0,50</output></label>
+          </div>
+          <div class="weight-subgroup">
+            <h4>💰 Retorno fiscal direto</h4>
+            <label>Tributos / renúncia fiscal<input id="w_beneficio_custo" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="1.5" disabled><output data-for="w_beneficio_custo">1,50</output></label>
+          </div>
+          <div class="weight-subgroup">
+            <h4>👥 Contrapartidas imediatas</h4>
+            <label>Empregos diretos informados<input id="w_emprego_direto" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="1.5" disabled><output data-for="w_emprego_direto">1,50</output></label>
+            <label>Compras locais<input id="w_compras_locais" class="weight-input" data-horizon="short" type="range" min="0" max="3" step="0.05" value="1.5" disabled><output data-for="w_compras_locais">1,50</output></label>
+          </div>
+        </section>
+        <section class="weight-block long-term">
+          <div class="weight-block-head"><h3>Bloco B — Longo prazo</h3><span>Longo prazo</span></div>
+          <p class="hint">Efeitos estruturais: diversificação produtiva, enraizamento territorial, alinhamento com a política industrial.</p>
+          <div class="weight-subgroup">
+            <h4>🔬 Sofisticação tecnológica e diversificação</h4>
+            <label>Conteúdo tecnológico<input id="w_tecnologia" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="1.0" disabled><output data-for="w_tecnologia">1,00</output></label>
+            <label>Produto novo/pouco produzido<input id="w_produto_novo" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.75" disabled><output data-for="w_produto_novo">0,75</output></label>
+            <label>Setor estratégico ou setor-chave<input id="w_estrategia" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.75" disabled><output data-for="w_estrategia">0,75</output></label>
+          </div>
+          <div class="weight-subgroup">
+            <h4>🗺 Encadeamento territorial</h4>
+            <label>Especialização territorial robusta<input id="w_territorio_ql" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="1.0" disabled><output data-for="w_territorio_ql">1,00</output></label>
+            <label>Abrangência municipal dos impactos<input id="w_abrangencia_municipal" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="1.0" disabled><output data-for="w_abrangencia_municipal">1,00</output></label>
+            <label>Baixa base formal municipal<input id="w_territorio_base" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_territorio_base">0,50</output></label>
+            <label>Desconcentração econômica<input id="w_desconcentracao_economica" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.75" disabled><output data-for="w_desconcentracao_economica">0,75</output></label>
+          </div>
+          <div class="weight-subgroup">
+            <h4>⚓ Enraizamento e custo de saída</h4>
+            <label>Tempo do projeto na Paraíba<input id="w_tempo_projeto" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.75" disabled><output data-for="w_tempo_projeto">0,75</output></label>
+            <label>Ativos fixos irrecuperáveis<input id="w_ativos_irrecuperaveis" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.75" disabled><output data-for="w_ativos_irrecuperaveis">0,75</output></label>
+          </div>
+          <div class="weight-subgroup">
+            <h4>🔄 Inserção na economia estadual</h4>
+            <label>Destino para fora do estado<input id="w_destino" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_destino">0,50</output></label>
+            <label>Substituição de importações<input id="w_substituicao" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="0.5" disabled><output data-for="w_substituicao">0,50</output></label>
+          </div>
+          <div class="weight-subgroup" id="peso_comercio_section" style="display:none">
+            <h4>🛒 Critérios exclusivos do comércio <span class="peso-comercio-badge">Comércio</span></h4>
+            <p class="hint">Só entram na nota quando o macrossegmento é Comércio.</p>
+            <div class="peso-comercio-only">
+              <label>Vende produtos de origem local (PB)<input id="w_com_origem_local" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="1.5" disabled><output data-for="w_com_origem_local">1,50</output></label>
+              <label>Destina vendas ao mercado estadual (PB)<input id="w_com_destino_local" class="weight-input" data-horizon="long" type="range" min="0" max="3" step="0.05" value="1.5" disabled><output data-for="w_com_destino_local">1,50</output></label>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="weight-session-actions" id="weight_session_actions" hidden>
+        <button type="button" class="light" onclick="restaurarPesosPadrao()">Restaurar pesos padrão</button>
+        <button type="button" class="light" onclick="salvarPesosSessao()">Salvar nesta sessão</button>
+        <button type="button" class="light" onclick="exportarConfiguracaoPesos()">Exportar configuração</button>
+      </div>
+
+      <div id="peso_modal" class="modal-backdrop" hidden>
+        <div class="modal-card">
+          <h3>Autenticação dos pesos</h3>
+          <label>Login<input type="text" id="peso_login" autocomplete="username"></label>
+          <label>Senha<input type="password" id="peso_senha" autocomplete="current-password"></label>
+          <div id="peso_modal_error" class="modal-error"></div>
+          <div class="ai-actions">
+            <button type="button" id="peso_confirm_btn" onclick="confirmarDesbloqueioPesos()">Confirmar</button>
+            <button type="button" class="light" onclick="fecharModalPesos()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <p class="hint">Nota normalizada de 0 a 10. Campo qualificador não informado recebe zero quando seu peso for maior que zero.</p>
+    </div>
+  </details>
+  <div class="wizard-actions">
+    <button type="button" class="light" id="wizard_prev" onclick="prevWizardStep()">Voltar</button>
+    <span class="hint" id="wizard_hint">Etapa 1 de 3</span>
+    <button type="button" id="wizard_next" onclick="nextWizardStep()">Continuar</button>
+  </div>
+</section>
+<section id="relatorio" class="tab-panel" data-tab="economico">
+  <h2>Impactos econômicos</h2>
+  <div class="tab-placeholder">Gere o relatório para visualizar os indicadores desenvolvimentistas. Antes disso, clique em <b>Voltar</b> para informar manualmente os dados ou ler um arquivo.</div>
+</section>
+<section id="memoria_tecnica" class="tab-panel" data-tab="tecnica" data-module-id="memoria_tecnica">
+  <h2>Memória técnica</h2>
+  <div class="tab-placeholder">Depois de gerar a análise, esta aba reunirá multiplicadores, pesos, setores impactados, memória fiscal, parâmetros e logs.</div>
+</section>
+<section id="documento_analise" class="tab-panel" data-tab="documento" data-module-id="documento_analise">
+  <h2>Documento da análise</h2>
+  <p class="hint">Use esta aba depois de revisar a decisão preliminar. A IA deve apoiar a redação, a interpretação e a organização textual; os cálculos permanecem no motor determinístico.</p>
+  <label>Orientações para o texto explicativo</label>
+  <textarea id="descricao_empresario" rows="4"
+    placeholder="Informe aqui orientações para a redação do documento: pontos que devem ser enfatizados, ressalvas, linguagem desejada, contexto do processo ou dúvidas que o auditor deseja destacar."></textarea>
+  <div class="ai-actions">
+    <button type="button" class="light" onclick="gerarAnaliseIA()">Gerar análise textual</button>
+    <button type="button" class="light" onclick="gerarWordRelatorioHibrido()">Gerar documento</button>
+    <button type="button" class="light" onclick="baixarLogAuditoria()">Baixar memória JSON</button>
+  </div>
+  <div id="documento_status" class="ai-status">Gere primeiro a decisão preliminar. Depois, use esta aba para produzir o texto e o documento editável.</div>
+  <div id="documento_texto" class="tab-placeholder" style="margin-top:12px">O texto explicativo aparecerá aqui. O documento deve conter títulos, tabelas, números e ressalvas padronizadas pelo painel. A IA entra apenas para redigir e interpretar os resultados.</div>
+</section>
+<section id="parametros" class="tab-panel" data-tab="parametros" data-module-id="parametros">
+  <h2>Parâmetros</h2>
+  <p class="hint">Configurações de pesos, serviço local de IA, horizonte de análise e hipóteses experimentais. Esta aba deve ser usada com critério de governança.</p>
+  <div id="parametros_container"></div>
+</section>
+<script defer src="dados/payload_mip_pb_v20_b.js"></script>
+<script defer src="config/pesos_pontuacao_v1.js"></script>
+<script defer src="dados/painel_mip_pb_v20_b.js"></script>
+<script defer src="dados/map_svg_v20.js"></script>
+<script defer src="static/v20/module_registry.js"></script>
+<script defer src="static/v20/helpers.js"></script>
+<script defer src="static/v20/fiscal_produtos.js"></script>
+<script defer src="static/v20/calculos.js"></script>
+<script defer src="static/v20/pesos_auditoria.js"></script>
+<script defer src="static/v20/territorio_calculo.js"></script>
+<script defer src="static/v20/mapa_territorial.js"></script>
+<script defer src="static/v20/mapa_ia.js"></script>
+<script defer src="static/v20/avaliar.js"></script>
+<script defer src="static/v20/init.js"></script>
+</div>
+</main>
+</body>
+</html>

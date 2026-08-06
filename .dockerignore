@@ -1,0 +1,17 @@
+.DS_Store
+.git
+.gitignore
+__pycache__/
+*.py[cod]
+.venv/
+.venv_ia/
+.pytest_cache/
+docs/
+logs/
+tmp/
+*.log
+servico_ia_contratos.py
+iniciar_servico_ia*.command
+instalar_dependencias_ia.command
+requirements_ia.txt
+README.md

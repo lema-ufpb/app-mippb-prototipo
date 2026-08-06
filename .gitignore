@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.venv_ia/
+logs/
+relatorios_ia/
+tmp/
+*.log
+dados/cnpj_rf_pb.sqlite
+resultados/cnpj_rf_downloads/

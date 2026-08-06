@@ -1,0 +1,71 @@
+{
+  "versao": "V20_B",
+  "html_sem_dados_embutidos": true,
+  "arquivo_principal": "formulario_avaliacao_ex_ante.html",
+  "camadas": [
+    {
+      "id": "entrada_dados",
+      "ativo": true,
+      "descricao": "Campos preenchidos manualmente ou por leitura documental confirmada pelo auditor.",
+      "config": "config/etapas_v20_b.py"
+    },
+    {
+      "id": "impactos_economicos",
+      "ativo": true,
+      "descricao": "Resultados de producao, valor adicionado, emprego, massa salarial, mapa territorial e merito economico.",
+      "config": "config/painel_v20_b.py"
+    },
+    {
+      "id": "memoria_tecnica",
+      "ativo": true,
+      "descricao": "Memoria de calculo, parametros e registro modular para auditoria.",
+      "config": "dados/painel_mip_pb_v20_b.js"
+    },
+    {
+      "id": "assistente_ia",
+      "ativo": true,
+      "descricao": "Leitura documental e redacao analitica via servico local opcional.",
+      "servico_local": "http://127.0.0.1:8771"
+    },
+    {
+      "id": "impactos_tributarios",
+      "ativo": false,
+      "descricao": "Bloco mantido fora desta variante por revisao metodologica."
+    },
+    {
+      "id": "checklist_fain",
+      "ativo": false,
+      "descricao": "Bloco mantido fora desta variante por revisao metodologica."
+    }
+  ],
+  "dependencias_principais": [
+    {
+      "modulo": "mapa_territorial",
+      "requer": [
+        "municipio_instalacao",
+        "setor_scn",
+        "choque_producao",
+        "dados/payload_mip_pb_v20_b.js",
+        "dados/map_svg_v20.js"
+      ]
+    },
+    {
+      "modulo": "impactos_mip",
+      "requer": [
+        "setor_scn",
+        "valor_com_beneficio",
+        "valor_sem_beneficio",
+        "dados/payload_mip_pb_v20_b.js"
+      ]
+    },
+    {
+      "modulo": "pontuacao_economica",
+      "requer": [
+        "config/pesos_pontuacao_v1.js",
+        "dados/painel_mip_pb_v20_b.js",
+        "dados/payload_mip_pb_v20_b.js"
+      ]
+    }
+  ]
+}
+

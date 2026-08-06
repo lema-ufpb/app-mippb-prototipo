@@ -1,0 +1,105 @@
+"""Dicionário oficial de campos do formulário v20.
+
+Este arquivo descreve os campos que podem alimentar indicadores. Ele não
+executa cálculos; serve para governança, auditoria e validação de dependências.
+"""
+
+CAMPOS = [
+    # Etapa 1 - identificação
+    {"id": "cnpj", "rotulo": "CNPJ", "tipo": "texto", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise", "checklist_fain"]},
+    {"id": "protocolo", "rotulo": "Número de protocolo", "tipo": "texto", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+    {"id": "razao_social", "rotulo": "Razão social", "tipo": "texto", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+    {"id": "nome_fantasia", "rotulo": "Nome fantasia", "tipo": "texto", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+    {"id": "porte_empresa", "rotulo": "Porte", "tipo": "select", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "uf_origem", "rotulo": "UF de origem", "tipo": "select", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "situacao_cadastral", "rotulo": "Situação", "tipo": "select", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "tipo_analise", "rotulo": "Tipo de análise", "tipo": "select", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_producao", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "contrato_file", "rotulo": "Arquivo do processo", "tipo": "arquivo", "etapa": "empresa", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+
+    # Etapa 2 - macrosegmento e choque
+    {"id": "macrossegmento", "rotulo": "Macrossegmento", "tipo": "select", "etapa": "macrosegmento", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_producao", "impacto_valor_adicionado", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "cnae", "rotulo": "CNAE principal - indústria", "tipo": "texto", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["setor_chave", "checklist_fain"]},
+    {"id": "tru", "rotulo": "Código TRU/SCN - indústria", "tipo": "texto", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["setor_chave", "impacto_producao", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "municipio", "rotulo": "Município de instalação - indústria", "tipo": "select", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["absorcao_territorial", "mapa_territorial"]},
+    {"id": "valor_sem_beneficio", "rotulo": "Produção esperada sem benefício", "tipo": "moeda", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "valor", "rotulo": "Produção esperada com benefício", "tipo": "moeda", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["impacto_producao", "impacto_valor_adicionado", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "renuncia_pct", "rotulo": "Percentual de renúncia pleiteado", "tipo": "percentual", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["renuncia_fiscal", "receita_tributaria", "custo_por_emprego"]},
+    {"id": "meta_recuperacao_tributos", "rotulo": "Meta de recuperação de tributos", "tipo": "percentual", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["receita_tributaria"]},
+    {"id": "empregos", "rotulo": "Empregos diretos informados - indústria", "tipo": "numero", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["impacto_emprego", "custo_por_emprego"]},
+    {"id": "salario", "rotulo": "Salário médio mensal esperado - indústria", "tipo": "moeda", "etapa": "macrosegmento_industria", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["impacto_massa_salarial"]},
+
+    {"id": "cnae_com", "rotulo": "CNAE principal - comércio", "tipo": "texto", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["setor_chave", "checklist_fain"]},
+    {"id": "tru_com", "rotulo": "Código TRU/SCN - comércio", "tipo": "texto", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["setor_chave", "impacto_producao", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "municipio_com", "rotulo": "Município de instalação - comércio", "tipo": "select", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["absorcao_territorial", "mapa_territorial"]},
+    {"id": "valor_sem_beneficio_com", "rotulo": "Faturamento esperado sem benefício", "tipo": "moeda", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "valor_com", "rotulo": "Faturamento esperado com benefício", "tipo": "moeda", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["impacto_producao", "impacto_valor_adicionado", "impacto_emprego", "renuncia_fiscal"]},
+    {"id": "com_margem", "rotulo": "Margem comercial média estimada", "tipo": "percentual", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "renuncia_pct_com", "rotulo": "Percentual de renúncia pleiteado - comércio", "tipo": "percentual", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["renuncia_fiscal", "receita_tributaria", "custo_por_emprego"]},
+    {"id": "meta_recuperacao_tributos_com", "rotulo": "Meta de recuperação de tributos - comércio", "tipo": "percentual", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "empregos_com", "rotulo": "Empregos diretos informados - comércio", "tipo": "numero", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["impacto_emprego", "custo_por_emprego"]},
+    {"id": "salario_com", "rotulo": "Salário médio mensal esperado - comércio", "tipo": "moeda", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["impacto_massa_salarial"]},
+    {"id": "com_origem_produtos", "rotulo": "Origem principal dos produtos vendidos", "tipo": "select", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "com_destino_vendas", "rotulo": "Principal destino das vendas", "tipo": "select", "etapa": "macrosegmento_comercio", "ativo": True, "macrosegmentos": ["comercio"], "alimenta": ["risco_rent_seeking"]},
+
+    # Retenção
+    {"id": "ret_producao_atual", "rotulo": "Produção/faturamento atual", "tipo": "moeda", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "ret_producao_beneficio_atual", "rotulo": "Produção com benefício atual", "tipo": "moeda", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["renuncia_fiscal"]},
+    {"id": "ret_beneficio_atual_pct", "rotulo": "Benefício atual", "tipo": "percentual", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["renuncia_fiscal"]},
+    {"id": "ret_producao_pleito_atendido", "rotulo": "Produção com pleito atendido", "tipo": "moeda", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "ret_producao_sem_acordo", "rotulo": "Produção sem acordo", "tipo": "moeda", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_producao", "renuncia_fiscal"]},
+    {"id": "ret_beneficio_pleiteado_pct", "rotulo": "Benefício pleiteado", "tipo": "percentual", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["renuncia_fiscal"]},
+    {"id": "ret_prob_saida_pct", "rotulo": "Probabilidade de saída/redução", "tipo": "percentual", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "ret_empregos_atuais", "rotulo": "Empregos atuais", "tipo": "numero", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_emprego"]},
+    {"id": "ret_empregos_pleito", "rotulo": "Empregos com pleito atendido", "tipo": "numero", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_emprego"]},
+    {"id": "ret_empregos_sem_acordo", "rotulo": "Empregos sem acordo", "tipo": "numero", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_emprego"]},
+    {"id": "ret_meta_recuperacao_tributos", "rotulo": "Meta de recuperação na retenção", "tipo": "percentual", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "ret_evidencia_saida", "rotulo": "Evidência de risco de saída", "tipo": "texto_longo", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking", "documento_analise"]},
+    {"id": "ret_ideia_difal", "rotulo": "Hipótese de DIFAL em caso de saída", "tipo": "texto_longo", "etapa": "retencao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["difal_st"]},
+
+    # Etapa 3 - qualificadores e investimento
+    {"id": "investimento_privado", "rotulo": "Investimento privado inicial", "tipo": "moeda", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "investimento_publico", "rotulo": "Investimento público associado", "tipo": "moeda", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "investimento_terreno_imovel", "rotulo": "Aquisição de terreno ou imóvel", "tipo": "moeda", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "investimento_obras", "rotulo": "Valor previsto para obras", "tipo": "moeda", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["empregos_implantacao"]},
+    {"id": "investimento_outros", "rotulo": "Outros investimentos", "tipo": "moeda", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "imovel_tipo", "rotulo": "Imóvel próprio ou alugado", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "equipamentos_adquiridos_pct", "rotulo": "Equipamentos adquiridos", "tipo": "percentual", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "ativos_recuperaveis_pct", "rotulo": "Ativos recuperáveis", "tipo": "percentual", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "incentivo_locacional", "rotulo": "Incentivo locacional/crédito", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "permanencia_anos", "rotulo": "Tempo previsto do projeto na Paraíba", "tipo": "numero", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "local", "rotulo": "Compras locais", "tipo": "percentual", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking", "retencao_impactos_pb"]},
+    {"id": "destino", "rotulo": "Destino da produção", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "substitui", "rotulo": "Substituição de importações", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["risco_rent_seeking"]},
+    {"id": "novo_produto", "rotulo": "Produto novo ou pouco produzido", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["risco_rent_seeking", "checklist_fain"]},
+    {"id": "estrategico", "rotulo": "Setor estratégico", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["setor_chave"]},
+    {"id": "produtos", "rotulo": "Produtos produzidos ou comercializados", "tipo": "texto_longo", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise", "checklist_fain"]},
+    {"id": "descricao_empresario", "rotulo": "Descrição do empreendimento", "tipo": "texto_longo", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+    {"id": "adicionalidade", "rotulo": "Ganho adicional para o Estado", "tipo": "select", "etapa": "qualificacao", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["risco_rent_seeking"]},
+
+    # Etapa tributária/DIFAL e FAIN
+    {"id": "renuncia_maxima_permitida", "rotulo": "Percentual máximo de renúncia permitido", "tipo": "percentual", "etapa": "tributario_difal", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["renuncia_fiscal", "receita_tributaria"]},
+    {"id": "ext_uf_alternativa", "rotulo": "UF alternativa", "tipo": "select", "etapa": "tributario_difal", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["difal_st"]},
+    {"id": "ext_pct_vendas_pb", "rotulo": "Parcela das vendas destinadas à PB", "tipo": "percentual", "etapa": "tributario_difal", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["difal_st"]},
+    {"id": "ext_pct_captura_entrada", "rotulo": "Captura fiscal de entrada", "tipo": "percentual", "etapa": "tributario_difal", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["difal_st"]},
+    {"id": "ext_prob_abastecimento_externo", "rotulo": "Probabilidade de abastecimento externo", "tipo": "percentual", "etapa": "tributario_difal", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["difal_st"]},
+    {"id": "fain_enquadramento", "rotulo": "Enquadramento FAIN", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_incremento_capacidade_pct", "rotulo": "Incremento de capacidade", "tipo": "percentual", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_projeto_cinep", "rotulo": "Projeto submetido à CINEP", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_atividade_elegivel", "rotulo": "Atividade elegível", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_domicilio_pb", "rotulo": "Domicílio na Paraíba", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_inscricao_icms", "rotulo": "Inscrição no ICMS", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_adimplencia", "rotulo": "Adimplência", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_nao_simples", "rotulo": "Não enquadramento no Simples", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_contrapartidas", "rotulo": "Contrapartidas", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_sem_outro_beneficio", "rotulo": "Sem outro benefício", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_ncm_producao", "rotulo": "NCM/produção anual", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["checklist_fain"]},
+    {"id": "fain_certidao_sem_similar", "rotulo": "Certidão sem similar", "tipo": "select", "etapa": "fain", "ativo": True, "macrosegmentos": ["industria"], "alimenta": ["checklist_fain"]},
+
+    # Parâmetros técnicos
+    {"id": "impact_share", "rotulo": "Percentual acumulado dos impactos indiretos", "tipo": "percentual", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["mapa_territorial"]},
+    {"id": "retorno_horizonte", "rotulo": "Horizonte de retorno", "tipo": "numero", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "retorno_crescimento", "rotulo": "Crescimento anual", "tipo": "percentual", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "retorno_desconto", "rotulo": "Taxa de desconto", "tipo": "percentual", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["receita_tributaria"]},
+    {"id": "retorno_meses_salario", "rotulo": "Meses de salário", "tipo": "numero", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["impacto_massa_salarial"]},
+    {"id": "ia_service_url", "rotulo": "Endereço do serviço local de IA", "tipo": "url", "etapa": "parametros", "ativo": True, "macrosegmentos": ["industria", "comercio"], "alimenta": ["documento_analise"]},
+]

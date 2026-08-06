@@ -1,0 +1,24 @@
+{
+  "descricao": "Pesos dos índices setoriais compostos da avaliação ex ante (MIP-PB). Cada bloco deve somar 1. Justificativa: intensidade local e ligação para trás dominam porque medem quanto do choque permanece na economia paraibana; o índice de mitigação de rent-seeking combina os dois compostos anteriores com retorno tributário e conteúdo tecnológico.",
+  "versao": "v20",
+  "indices_setoriais": {
+    "indice_justificativa_produtiva": {
+      "intensidade_insumos_locais": 0.30,
+      "score_ligacao_tras": 0.25,
+      "score_ligacao_frente": 0.15,
+      "score_multiplicador_producao": 0.15,
+      "score_setor_chave": 0.15
+    },
+    "indice_encadeamento_local": {
+      "intensidade_insumos_locais": 0.50,
+      "score_ligacao_tras": 0.30,
+      "score_multiplicador_producao": 0.20
+    },
+    "indice_mitigacao_rent_seeking": {
+      "indice_justificativa_produtiva": 0.35,
+      "indice_encadeamento_local": 0.25,
+      "score_multiplicador_tributario": 0.20,
+      "score_tecnologia": 0.20
+    }
+  }
+}
