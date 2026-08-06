@@ -1,0 +1,9 @@
+__pycache__
+*.py[cod]
+*.command
+Dockerfile
+.dockerignore
+docs
+requirements_ia.txt
+servico_ia_contratos.py
+tmp

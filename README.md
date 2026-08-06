@@ -47,7 +47,7 @@ docker stop painel-mip-pb && docker rm painel-mip-pb
 
 ### Vercel
 
-O projeto e estatico e ja esta configurado com `vercel.json` (o build copia `index.html`, `dados/`, `config/` e `static/` para `dist/`, que e o diretorio publicado).
+O projeto e estatico e nao possui etapa de build: `vercel.json` apenas ativa `cleanUrls`, e a Vercel publica os arquivos direto da raiz do repositorio (`index.html`, `dados/`, `config/` e `static/`).
 
 Pelo CLI:
 
