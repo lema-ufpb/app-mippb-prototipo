@@ -11,3 +11,4 @@ dist/
 *.log
 dados/cnpj_rf_pb.sqlite
 resultados/cnpj_rf_downloads/
+graphify-out/
